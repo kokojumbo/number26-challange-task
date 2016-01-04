@@ -1,6 +1,6 @@
 package com.number26;
 
-import com.number26.load.LoaderTransactions;
+import com.number26.load.TransactionsLoader;
 import com.number26.transactions.Transaction;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.json.JSONException;
@@ -20,7 +20,7 @@ public class SumServiceTest {
 
     private HttpServer server;
     private WebTarget target;
-    private List<Transaction> transactions = LoaderTransactions.getInstance().getTransactions();
+    private List<Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
 
     @Before
     public void setUp() throws Exception {

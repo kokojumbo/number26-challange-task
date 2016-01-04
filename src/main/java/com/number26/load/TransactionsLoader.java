@@ -13,12 +13,12 @@ import java.util.Scanner;
 /**
  * Created by kmg on 2016-01-01.
  */
-public class LoaderTransactions {
+public class TransactionsLoader {
 
 
     private List<Transaction> transactions;
 
-    private LoaderTransactions() {
+    private TransactionsLoader() {
         //simple load transactions from a file
         URL url = Resources.getResource("transactions");
         try {
@@ -42,7 +42,7 @@ public class LoaderTransactions {
 
     }
 
-    public static LoaderTransactions getInstance() {
+    public static TransactionsLoader getInstance() {
         return SingletonHolder.instance;
     }
 
@@ -51,7 +51,7 @@ public class LoaderTransactions {
     }
 
     private static class SingletonHolder {
-        private final static LoaderTransactions instance = new LoaderTransactions();
+        private final static TransactionsLoader instance = new TransactionsLoader();
     }
 
 }

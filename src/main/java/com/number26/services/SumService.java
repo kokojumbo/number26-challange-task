@@ -1,6 +1,6 @@
 package com.number26.services;
 
-import com.number26.load.LoaderTransactions;
+import com.number26.load.TransactionsLoader;
 import com.number26.transactions.Transaction;
 import org.json.JSONException;
 
@@ -22,8 +22,8 @@ public class SumService {
     @GET
     @Path("/{transaction_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public SumResponse getSum(@PathParam("transaction_id") Long transactionId) throws JSONException {
-        List<Transaction> transactions = LoaderTransactions.getInstance().getTransactions();
+    public SumResponse getSum(final @PathParam("transaction_id") Long transactionId) throws JSONException {
+        List<Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
         Transaction transaction = getTransaction(transactionId, transactions);
         //This is not an optimal solution. We should store transactions in different structure for example in the incidence matrix or the neighbour list then we could use faster algorithms
         double sum = transaction.getAmount();
@@ -34,7 +34,7 @@ public class SumService {
         return new SumResponse(sum);
     }
 
-    private Transaction getTransaction(Long transactionId, List<Transaction> transactions) {
+    private Transaction getTransaction(final Long transactionId, List<Transaction> transactions) {
         return transactions.stream().filter(t -> t.getTransactionId() == transactionId).collect(Collectors.toList()).get(0);
     }
 

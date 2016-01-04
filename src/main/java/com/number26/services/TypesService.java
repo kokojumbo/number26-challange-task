@@ -1,7 +1,7 @@
 package com.number26.services;
 
 
-import com.number26.load.LoaderTransactions;
+import com.number26.load.TransactionsLoader;
 import com.number26.transactions.Transaction;
 
 import javax.ws.rs.GET;
@@ -18,7 +18,7 @@ public class TypesService {
     @Path("/{type}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Long> getTransactionByType(@PathParam("type") String type) {
-        List<Transaction> transactions = LoaderTransactions.getInstance().getTransactions();
+        List<Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
         // filter types and get ids
         return transactions.stream().filter(t -> type.equals(t.getType())).map(Transaction::getTransactionId).collect(Collectors.toList());
     }

@@ -1,7 +1,7 @@
 package com.number26.services;
 
 
-import com.number26.load.LoaderTransactions;
+import com.number26.load.TransactionsLoader;
 import com.number26.transactions.Transaction;
 
 import javax.ws.rs.*;
@@ -17,7 +17,7 @@ public class TransactionService {
     @Path("/{transaction_id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Transaction getTransactionById(@PathParam("transaction_id") Long transactionId) {
-        List<Transaction> transactions = LoaderTransactions.getInstance().getTransactions();
+        List<Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
         List<Transaction> filteredTransactions = transactions.stream().filter(t -> t.getTransactionId() == transactionId).collect(Collectors.toList());
         if (filteredTransactions.isEmpty()) {
             return null;
@@ -33,7 +33,7 @@ public class TransactionService {
     @Path("/{transaction_id}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response putTransactionById(Transaction incomingTransaction, @PathParam("transaction_id") Long transactionId) throws Exception {
-        List<Transaction> transactions = LoaderTransactions.getInstance().getTransactions();
+        List<Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
         List<Transaction> filteredTransactions = transactions.stream().filter(t -> t.getTransactionId() == transactionId).collect(Collectors.toList());
         if (filteredTransactions.isEmpty()) {
             Transaction newTransaction = new Transaction(transactionId, incomingTransaction.getAmount(), incomingTransaction.getType(), incomingTransaction.getParentId());
