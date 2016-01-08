@@ -14,7 +14,7 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,7 +23,7 @@ public class TransactionServiceTest {
 
     private HttpServer server;
     private WebTarget target;
-    private List<Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
+    private Map<Long, Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
 
     @Before
     public void setUp() throws Exception {
@@ -45,7 +45,7 @@ public class TransactionServiceTest {
     @Test
     public void testNoTransactionFound() throws JSONException {
         //given
-        transactions.add(Transaction.newBuilder().transactionId(14).amount(2.2).type("test").build());
+        transactions.put(Long.valueOf(14), Transaction.newBuilder().amount(2.2).type("test").build());
         //when
         String response = target.path("services/transaction/666").request().get(String.class);
         //then
@@ -60,12 +60,11 @@ public class TransactionServiceTest {
     public void testGetTransactionById() throws JSONException {
 
         //given
-        Transaction newTransaction = Transaction.newBuilder().transactionId(543).amount(2.2).type("test").parentId((long) 153).build();
-        transactions.add(newTransaction);
+        Transaction newTransaction = Transaction.newBuilder().amount(2.2).type("test").parentId(Long.valueOf(153)).build();
+        transactions.put(Long.valueOf(543), newTransaction);
         //when
         JSONObject jsonObj = new JSONObject(target.path("services/transaction/543").request().get(String.class));
         //then
-        assertEquals(newTransaction.getTransactionId(), jsonObj.getLong("transactionId"));
         assertEquals(newTransaction.getAmount(), jsonObj.getDouble("amount"), 0.0);
         assertEquals(newTransaction.getType(), jsonObj.getString("type"));
         assertEquals((long) newTransaction.getParentId(), jsonObj.getLong("parentId"));
@@ -80,7 +79,7 @@ public class TransactionServiceTest {
     @Test
     public void testPutTransactionById() throws JSONException {
         //given
-        Transaction newTransaction = Transaction.newBuilder().amount(22.2).type("testNew").parentId((long) 123).build();
+        Transaction newTransaction = Transaction.newBuilder().amount(22.2).type("testNew").parentId(Long.valueOf(123)).build();
 
         //when
         Response responsePut = target.path("services/transaction/999").request().put(Entity.json(newTransaction), Response.class);
@@ -89,7 +88,6 @@ public class TransactionServiceTest {
 
         assertEquals(200, responsePut.getStatus());
 
-        assertEquals(999, responseGet.getLong("transactionId"));
         assertEquals(newTransaction.getAmount(), responseGet.getDouble("amount"), 0.0);
         assertEquals(newTransaction.getType(), responseGet.getString("type"));
         assertEquals((long) newTransaction.getParentId(), responseGet.getLong("parentId"));
@@ -104,7 +102,7 @@ public class TransactionServiceTest {
     @Test
     public void testPutExistingTransactionById() throws JSONException {
         //given
-        Transaction newTransaction = Transaction.newBuilder().amount(22.2).type("testNew").parentId((long) 123).build();
+        Transaction newTransaction = Transaction.newBuilder().amount(22.2).type("testNew").parentId(Long.valueOf(123)).build();
 
         //when
         Response responsePutA = target.path("services/transaction/876").request().put(Entity.json(newTransaction), Response.class);

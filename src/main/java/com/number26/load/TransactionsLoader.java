@@ -6,8 +6,8 @@ import com.number26.transactions.Transaction;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -16,7 +16,7 @@ import java.util.Scanner;
 public class TransactionsLoader {
 
 
-    private List<Transaction> transactions;
+    private Map<Long, Transaction> transactions;
 
     private TransactionsLoader() {
         //simple load transactions from a file
@@ -24,20 +24,21 @@ public class TransactionsLoader {
         try {
             String text = Resources.toString(url, Charsets.UTF_8);
             Scanner scanner = new Scanner(text);
-            transactions = new ArrayList<>();
+            transactions = new HashMap<>();
             while (scanner.hasNextLine()) {
-                Transaction transaction = Transaction.newBuilder().transactionId(scanner.nextLong()).amount(scanner.nextDouble()).type(scanner.next()).parentId(scanner.nextLong()).build();
+                Long transactionId = scanner.nextLong();
+                Transaction transaction = Transaction.newBuilder().amount(scanner.nextDouble()).type(scanner.next()).parentId(scanner.nextLong()).build();
                 System.out.println(transaction.toString());
-                transactions.add(transaction);
+                transactions.put(transactionId, transaction);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         //load transactions manually
-        transactions.add(Transaction.newBuilder().transactionId(4).amount(3.4).type("fast").parentId((long) 5).build());
-        transactions.add(Transaction.newBuilder().transactionId(5).amount(3.4).type("fast").parentId((long) 6).build());
-        transactions.add(Transaction.newBuilder().transactionId(6).amount(3.4).type("fast").build());
+        transactions.put(Long.valueOf(4), Transaction.newBuilder().amount(3.4).type("fast").parentId(Long.valueOf(5)).build());
+        transactions.put(Long.valueOf(5), Transaction.newBuilder().amount(3.4).type("fast").parentId(Long.valueOf(6)).build());
+        transactions.put(Long.valueOf(6), Transaction.newBuilder().amount(3.4).type("fast").build());
 
 
     }
@@ -46,7 +47,7 @@ public class TransactionsLoader {
         return SingletonHolder.instance;
     }
 
-    public List<Transaction> getTransactions() {
+    public Map<Long, Transaction> getTransactions() {
         return transactions;
     }
 

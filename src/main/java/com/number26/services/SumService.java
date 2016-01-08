@@ -9,8 +9,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 
 @Path("/services/sum")
@@ -23,19 +22,15 @@ public class SumService {
     @Path("/{transaction_id}")
     @Produces(MediaType.APPLICATION_JSON)
     public SumResponse getSum(final @PathParam("transaction_id") Long transactionId) throws JSONException {
-        List<Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
-        Transaction transaction = getTransaction(transactionId, transactions);
+        Map<Long, Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
+        Transaction transaction = transactions.get(transactionId);
         //This is not an optimal solution. We should store transactions in different structure for example in the incidence matrix or the neighbour list then we could use faster algorithms
         double sum = transaction.getAmount();
         while (transaction.getParentId() != null) {
-            transaction = getTransaction(transaction.getParentId(), transactions);
+            transaction = transactions.get(transaction.getParentId());
             sum += transaction.getAmount();
         }
         return new SumResponse(sum);
-    }
-
-    private Transaction getTransaction(final Long transactionId, List<Transaction> transactions) {
-        return transactions.stream().filter(t -> t.getTransactionId() == transactionId).collect(Collectors.toList()).get(0);
     }
 
     static class SumResponse {

@@ -6,7 +6,6 @@ package com.number26.transactions;
 public class Transaction {
 
 
-    private long transactionId;
     private double amount;
     private String type;
     private Long parentId;
@@ -15,15 +14,13 @@ public class Transaction {
     public Transaction() {
     }
 
-    public Transaction(long transactionId, double amount, String type, Long parentId) {
-        this.transactionId = transactionId;
+    public Transaction(double amount, String type, Long parentId) {
         this.amount = amount;
         this.type = type;
         this.parentId = parentId;
     }
 
     private Transaction(Builder builder) {
-        setTransactionId(builder.transactionId);
         setAmount(builder.amount);
         setType(builder.type);
         setParentId(builder.parentId);
@@ -31,14 +28,6 @@ public class Transaction {
 
     public static Builder newBuilder() {
         return new Builder();
-    }
-
-    public long getTransactionId() {
-        return transactionId;
-    }
-
-    public void setTransactionId(long transactionId) {
-        this.transactionId = transactionId;
     }
 
     public double getAmount() {
@@ -68,7 +57,6 @@ public class Transaction {
     @Override
     public String toString() {
         return "Transaction{" +
-                "transactionId=" + transactionId +
                 ", amount=" + amount +
                 ", type='" + type + '\'' +
                 ", parentId=" + parentId +
@@ -76,17 +64,11 @@ public class Transaction {
     }
 
     public static final class Builder {
-        private long transactionId;
         private double amount;
         private String type;
         private Long parentId;
 
         private Builder() {
-        }
-
-        public Builder transactionId(long val) {
-            transactionId = val;
-            return this;
         }
 
         public Builder amount(double val) {

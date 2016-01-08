@@ -10,6 +10,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Path("/services/types")
@@ -18,9 +19,8 @@ public class TypesService {
     @Path("/{type}")
     @Produces(MediaType.APPLICATION_JSON)
     public List<Long> getTransactionByType(@PathParam("type") String type) {
-        List<Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
-        // filter types and get ids
-        return transactions.stream().filter(t -> type.equals(t.getType())).map(Transaction::getTransactionId).collect(Collectors.toList());
+        Map<Long, Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
+        return transactions.entrySet().stream().filter(t -> type.equals(t.getValue().getType())).map(t -> t.getKey()).collect(Collectors.toList());
     }
 }
 
