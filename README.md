@@ -10,7 +10,7 @@ KISS :)
     mvn exec:java
 
 ## Performence comment
-_I optimized my code in respect of performence. 
+I optimized my code in respect of performence. 
 By using hashmaps solutions I can get performance like this:
 - GET transaction - O(1)
 - GET sum of transactions - O(1)
