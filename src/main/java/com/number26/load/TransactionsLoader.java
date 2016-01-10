@@ -9,7 +9,7 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * This class is responsible for storing transactions and load them.
+ * This class is responsible for storing transactions and loading them.
  */
 public class TransactionsLoader {
 
