@@ -14,7 +14,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,7 +22,6 @@ public class TypesServiceTest {
 
     private HttpServer server;
     private WebTarget target;
-    private Map<Long, Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
 
     @Before
     public void setUp() throws Exception {
@@ -32,6 +30,7 @@ public class TypesServiceTest {
         // create the client
         Client client = ClientBuilder.newClient();
         target = client.target(Main.BASE_URI);
+        TransactionsLoader.getInstance().clearMaps();
     }
 
     @After
@@ -45,11 +44,11 @@ public class TypesServiceTest {
     @Test
     public void testNoExistingType() throws JSONException {
         //given
-        transactions.put(Long.valueOf(14), Transaction.newBuilder().amount(2.2).type("test").build());
+        TransactionsLoader.getInstance().putNewTransaction(Long.valueOf(14), Transaction.newBuilder().amount(2.2).type("test").build());
         //when
         String response = target.path("services/types/notypetest").request().get(String.class);
         //then
-        assertEquals("[]", response);
+        assertEquals("", response);
     }
 
 
@@ -59,11 +58,11 @@ public class TypesServiceTest {
     @Test
     public void testExistingTypes() throws JSONException {
         //given
-        transactions.put(Long.valueOf(11), Transaction.newBuilder().type("type1").build());
-        transactions.put(Long.valueOf(12), Transaction.newBuilder().type("type2").build());
-        transactions.put(Long.valueOf(13), Transaction.newBuilder().type("type3").build());
-        transactions.put(Long.valueOf(14), Transaction.newBuilder().type("type2").build());
-        transactions.put(Long.valueOf(15), Transaction.newBuilder().type("type2").build());
+        TransactionsLoader.getInstance().putNewTransaction(Long.valueOf(11), Transaction.newBuilder().type("type1").build());
+        TransactionsLoader.getInstance().putNewTransaction(Long.valueOf(12), Transaction.newBuilder().type("type2").build());
+        TransactionsLoader.getInstance().putNewTransaction(Long.valueOf(13), Transaction.newBuilder().type("type3").build());
+        TransactionsLoader.getInstance().putNewTransaction(Long.valueOf(14), Transaction.newBuilder().type("type2").build());
+        TransactionsLoader.getInstance().putNewTransaction(Long.valueOf(15), Transaction.newBuilder().type("type2").build());
         //when
         JSONArray jsonArrayType1 = new JSONArray(target.path("services/types/type1").request().get(String.class));
         JSONArray jsonArrayType2 = new JSONArray(target.path("services/types/type2").request().get(String.class));

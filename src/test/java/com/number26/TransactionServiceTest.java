@@ -14,7 +14,6 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,7 +22,6 @@ public class TransactionServiceTest {
 
     private HttpServer server;
     private WebTarget target;
-    private Map<Long, Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
 
     @Before
     public void setUp() throws Exception {
@@ -32,6 +30,7 @@ public class TransactionServiceTest {
         // create the client
         Client client = ClientBuilder.newClient();
         target = client.target(Main.BASE_URI);
+        TransactionsLoader.getInstance().clearMaps();
     }
 
     @After
@@ -45,7 +44,7 @@ public class TransactionServiceTest {
     @Test
     public void testNoTransactionFound() throws JSONException {
         //given
-        transactions.put(Long.valueOf(14), Transaction.newBuilder().amount(2.2).type("test").build());
+        TransactionsLoader.getInstance().putNewTransaction(Long.valueOf(14), Transaction.newBuilder().amount(2.2).type("test").build());
         //when
         String response = target.path("services/transaction/666").request().get(String.class);
         //then
@@ -61,7 +60,7 @@ public class TransactionServiceTest {
 
         //given
         Transaction newTransaction = Transaction.newBuilder().amount(2.2).type("test").parentId(Long.valueOf(153)).build();
-        transactions.put(Long.valueOf(543), newTransaction);
+        TransactionsLoader.getInstance().putNewTransaction(Long.valueOf(543), newTransaction);
         //when
         JSONObject jsonObj = new JSONObject(target.path("services/transaction/543").request().get(String.class));
         //then

@@ -1,7 +1,6 @@
 package com.number26.services;
 
 import com.number26.load.TransactionsLoader;
-import com.number26.transactions.Transaction;
 import org.json.JSONException;
 
 import javax.ws.rs.GET;
@@ -15,22 +14,16 @@ import java.util.Map;
 @Path("/services/sum")
 public class SumService {
 
+    Map<Long, Double> sumMap = TransactionsLoader.getInstance().getSumMap();
+
     /**
-     * return sum of the transaction and its parent
+     * return sum of the transaction and their offspring
      */
     @GET
     @Path("/{transaction_id}")
     @Produces(MediaType.APPLICATION_JSON)
     public SumResponse getSum(final @PathParam("transaction_id") Long transactionId) throws JSONException {
-        Map<Long, Transaction> transactions = TransactionsLoader.getInstance().getTransactions();
-        Transaction transaction = transactions.get(transactionId);
-        //This is not an optimal solution. We should store transactions in different structure for example in the incidence matrix or the neighbour list then we could use faster algorithms
-        double sum = transaction.getAmount();
-        while (transaction.getParentId() != null) {
-            transaction = transactions.get(transaction.getParentId());
-            sum += transaction.getAmount();
-        }
-        return new SumResponse(sum);
+        return new SumResponse(sumMap.get(transactionId));
     }
 
     static class SumResponse {
