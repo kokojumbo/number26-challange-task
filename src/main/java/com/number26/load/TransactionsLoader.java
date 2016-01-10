@@ -47,7 +47,7 @@ public class TransactionsLoader {
 
 
     /**
-     * This method is responsible for load of a new transaction.
+     * This method is responsible for loading of a new transaction.
      *
      * @param transactionId
      * @param newTransaction
@@ -75,11 +75,13 @@ public class TransactionsLoader {
     }
 
     private void putToSumMap(Long transactionId, Transaction newTransaction) {
+        //create or update a sum for a new transaction node
         if (sumMap.containsKey(transactionId)) {
             sumMap.put(transactionId, sumMap.get(transactionId) + newTransaction.getAmount());
         } else {
             sumMap.put(transactionId, newTransaction.getAmount());
         }
+        //create or update a sum for the path of the parents
         Long parentId = newTransaction.getParentId();
         while (parentId != null) {
             if (sumMap.containsKey(parentId)) {
@@ -88,6 +90,7 @@ public class TransactionsLoader {
             } else {
                 sumMap.put(parentId, newTransaction.getAmount());
             }
+            //check it there are more parents
             if (transactionMap.containsKey(parentId)) {
                 parentId = transactionMap.get(parentId).getParentId();
             } else {
